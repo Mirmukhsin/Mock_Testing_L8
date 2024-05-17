@@ -18,21 +18,27 @@ public class AuthUserServiceImpl implements AuthUserService {
     private final AuthUserRepository repository;
 
     @Override
-    public void create(@NonNull AuthUserCreateDto dto) {
+    public AuthUserGetDto create(@NonNull AuthUserCreateDto dto) {
         AuthUser authUser = AuthUser.builder()
                 .username(dto.getUsername())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
                 .build();
-        repository.save(authUser);
+
+        AuthUser savedUser = repository.save(authUser);
+
+        return new AuthUserGetDto(savedUser.getUsername(), savedUser.getEmail());
     }
 
     @Override
-    public void update(@NonNull AuthUserUpdateDto dto) {
+    public AuthUserGetDto update(@NonNull AuthUserUpdateDto dto) {
         AuthUser authUser = repository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Not Found"));
         authUser.setUsername(dto.getUsername());
         authUser.setEmail(dto.getEmail());
-        repository.save(authUser);
+
+        AuthUser savedUser = repository.save(authUser);
+
+        return new AuthUserGetDto(savedUser.getUsername(), savedUser.getEmail());
     }
 
     @Override

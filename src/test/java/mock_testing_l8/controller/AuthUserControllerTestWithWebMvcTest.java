@@ -33,16 +33,17 @@ class AuthUserControllerTestWithWebMvcTest {
 
     @Test
     void create() throws Exception {
-        AuthUserCreateDto createDto = AuthUserCreateDto.builder()
-                .username("Panda")
-                .email("panda@gmail.com")
-                .password("9779")
-                .build();
+        AuthUserCreateDto createDto = new AuthUserCreateDto();
+        createDto.setUsername("Panda");
+        createDto.setEmail("panda@gmail.com");
+        createDto.setPassword("9779");
+
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/authUser")
                         .contentType("application/json")
                         .content(mapper.writeValueAsString(createDto)))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
+
         verify(authUserService, times(1)).create(createDto);
     }
 
@@ -53,6 +54,7 @@ class AuthUserControllerTestWithWebMvcTest {
                 .email("panda@gmail.com")
                 .password("9779")
                 .build();
+
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/authUser")
                         .contentType("application/json")
@@ -66,20 +68,22 @@ class AuthUserControllerTestWithWebMvcTest {
 
     @Test
     void update() throws Exception {
-        AuthUserUpdateDto updateDto = AuthUserUpdateDto.builder()
-                .id(1)
-                .username("Simple")
-                .email("simple@gmail.com")
-                .build();
+        AuthUserUpdateDto updateDto = new AuthUserUpdateDto();
+        updateDto.setId(1);
+        updateDto.setUsername("Simple");
+        updateDto.setEmail("simple@gmail.com");
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/authUser")
                         .contentType("application/json")
                         .content(mapper.writeValueAsString(updateDto)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+
         MockHttpServletResponse response = mvcResult.getResponse();
         String contentAsString = response.getContentAsString();
         assertEquals("Successfully Updated - User", contentAsString);
+
         verify(authUserService, times(1)).update(updateDto);
     }
 
@@ -90,12 +94,14 @@ class AuthUserControllerTestWithWebMvcTest {
                 .username("Simple")
                 .email("")
                 .build();
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/authUser")
                         .contentType("application/json")
                         .content(mapper.writeValueAsString(updateDto)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
+
         String contentAsString = mvcResult.getResponse().getContentAsString();
         AppErrorDto errorDto = mapper.readValue(contentAsString, AppErrorDto.class);
         assertEquals(400, errorDto.getErrorCode());
@@ -105,25 +111,28 @@ class AuthUserControllerTestWithWebMvcTest {
 
     @Test
     void delete() throws Exception {
-        int deleteId = 1;
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/authUser/1")
                         .contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andReturn();
+
         String contentAsString = mvcResult.getResponse().getContentAsString();
         assertEquals("Successfully Deleted - User", contentAsString);
-        verify(authUserService, times(1)).delete(deleteId);
+
+        verify(authUserService, times(1)).delete(1);
     }
 
     @Test
     void get() throws Exception {
         when(authUserService.get(1)).thenReturn(new AuthUserGetDto("Panda", "panda@gmail.com"));
+
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/authUser/1")
                         .contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$.username").value("Panda"));
+
         verify(authUserService, times(1)).get(1);
     }
 
@@ -133,6 +142,7 @@ class AuthUserControllerTestWithWebMvcTest {
                         .get("/api/authUser")
                         .contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+
         verify(authUserService, times(1)).getAll();
     }
 }

@@ -4,14 +4,13 @@ import lombok.NonNull;
 import mock_testing_l8.dto.AuthUserCreateDto;
 import mock_testing_l8.dto.AuthUserGetDto;
 import mock_testing_l8.dto.AuthUserUpdateDto;
-import mock_testing_l8.entity.AuthUser;
 
 import java.util.List;
 
 public interface AuthUserService {
-    void create(@NonNull AuthUserCreateDto dto);
+    AuthUserGetDto create(@NonNull AuthUserCreateDto dto);
 
-    void update(@NonNull AuthUserUpdateDto dto);
+    AuthUserGetDto update(@NonNull AuthUserUpdateDto dto);
 
     void delete(@NonNull Integer id);
 
